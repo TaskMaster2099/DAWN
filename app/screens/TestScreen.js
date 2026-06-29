@@ -6,6 +6,7 @@ import {
     Pressable,
     Text
 } from 'react-native';
+import Clock from './Clock';
 
 function TestScreen({onNavigate}) {
     const handleClose = () => {
@@ -14,11 +15,7 @@ function TestScreen({onNavigate}) {
 
     return (
         <View style={styles.container}>
-            <Image
-                resizeMode='contain'
-                style={styles.image}
-                source={require('../assets/icon.png')}
-            />
+            <Clock style={styles.clock}/>
             <Pressable
                 onPress={handleClose}
                 style={({pressed}) => [
@@ -42,13 +39,14 @@ function TestScreen({onNavigate}) {
 }
 
 const styles = StyleSheet.create({
-    image: {
-        width: '100%',
-        height: '100%'
+    clock: {
+        
     },
     container: {
         backgroundColor: '#000000',
-        flex: 1
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     closeIcon: {
         width: 80,
