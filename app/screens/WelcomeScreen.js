@@ -20,7 +20,7 @@ function WelcomeScreen({onNavigate}) {
         >
             <View style={styles.logoContainer}>
                 <Image style={styles.logo} source={require('../assets/favicon.png')}/>
-                <Text style={{color: '#000000'}}>Wake Up Without Worries</Text>
+                <Text style={{color: '#ffffff'}}>Wake Up Without Worries</Text>
             </View>
             <Pressable
                 onPress={handleLogin}
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-end',
-        backgroundColor: '#d4d4d4'
+        backgroundColor: '#000000'
     },
     loginButton: {
         width: '40%',

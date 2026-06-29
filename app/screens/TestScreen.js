@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         height: '100%'
     },
     container: {
-        backgroundColor: '#000',
+        backgroundColor: '#000000',
         flex: 1
     },
     closeIcon: {
