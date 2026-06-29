@@ -17,11 +17,10 @@ function WelcomeScreen({onNavigate}) {
         <ImageBackground
             resizeMode='contain'
             style={styles.background}
-            source={require('../assets/splash-icon.png')}
         >
             <View style={styles.logoContainer}>
                 <Image style={styles.logo} source={require('../assets/favicon.png')}/>
-                <Text>Wake Up Without Worries</Text>
+                <Text style={{color: '#000000'}}>Wake Up Without Worries</Text>
             </View>
             <Pressable
                 onPress={handleLogin}
@@ -32,7 +31,15 @@ function WelcomeScreen({onNavigate}) {
             >
                 <Text style={styles.loginText}>Login</Text>
             </Pressable>
-            <View style={styles.registerButton}></View>
+            <Pressable
+                // onPress={handleLogin}
+                style={({pressed}) => [
+                    styles.registerButton,
+                    {backgroundColor: pressed ? '#3c9b95' : '#4ecdc4'}
+                ]}
+            >
+                <Text style={styles.registerText}>Register</Text>
+            </Pressable>
         </ImageBackground>
     );
 }
@@ -40,17 +47,19 @@ function WelcomeScreen({onNavigate}) {
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        backgroundColor: '#ffffff'
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-end',
+        backgroundColor: '#d4d4d4'
     },
     loginButton: {
-        width: '95%',
+        width: '40%',
         height: 70,
-        bottom: 10,
+        bottom: '5%',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10
+        borderRadius: 10,
+        margin: 10
     },
     loginText: {
         color: '#ffffff',
@@ -58,10 +67,18 @@ const styles = StyleSheet.create({
         fontSize: 25
     },
     registerButton: {
-        width: '95%',
+        width: '40%',
         height: 70,
+        bottom: '5%',
+        justifyContent: 'center',
+        alignItems: 'center',
         borderRadius: 10,
-        backgroundColor: '#4ecdc4'
+        margin: 10
+    },
+    registerText: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 25
     },
     logo: {
         width: 100,
@@ -69,7 +86,7 @@ const styles = StyleSheet.create({
     },
     logoContainer: {
         position: 'absolute',
-        top: 15,
+        top: '5%',
         alignItems: 'center'
     }
 })

@@ -23,12 +23,20 @@ function TestScreen({onNavigate}) {
                 onPress={handleClose}
                 style={({pressed}) => [
                     styles.closeIcon,
-                    {backgroundColor: pressed ? '#a2383d' : '#fc5c65'}
+                    {backgroundColor: pressed ? '#3c9b95' : '#4ecdc4'}
                 ]}
             >
                 <Text style={styles.closeText}>Back</Text>
             </Pressable>
-            <View style={styles.deleteIcon}></View>
+            <Pressable
+                // onPress={handleClose}
+                style={({pressed}) => [
+                    styles.deleteIcon,
+                    {backgroundColor: pressed ? '#a2383d' : '#fc5c65'}
+                ]}
+            >
+                <Text style={styles.deleteText}>Delete</Text>
+            </Pressable>
         </View>
     );
 }
@@ -60,11 +68,17 @@ const styles = StyleSheet.create({
     deleteIcon: {
         width: 80,
         height: 40,
-        backgroundColor: '#4ecdc4',
         position: 'absolute',
         top: 20,
         right: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
         borderRadius: 10
+    },
+    deleteText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 20
     }
 })
 
