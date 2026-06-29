@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
     Image,
     StyleSheet,
@@ -9,13 +9,19 @@ import {
 import Clock from './Clock';
 
 function TestScreen({onNavigate}) {
+    const [is24Hour, setIs24Hour] = useState(false);
+
     const handleClose = () => {
         onNavigate('Home')
     };
 
+    const handle24Hour = () => {
+        setIs24Hour(!is24Hour)
+    };
+
     return (
         <View style={styles.container}>
-            <Clock style={styles.clock}/>
+            <Clock use24Hour={is24Hour} style={styles.clock}/>
             <Pressable
                 onPress={handleClose}
                 style={({pressed}) => [
@@ -26,13 +32,13 @@ function TestScreen({onNavigate}) {
                 <Text style={styles.closeText}>Back</Text>
             </Pressable>
             <Pressable
-                // onPress={handleClose}
+                onPress={handle24Hour}
                 style={({pressed}) => [
-                    styles.deleteIcon,
+                    styles.settingsIcon,
                     {backgroundColor: pressed ? '#a2383d' : '#fc5c65'}
                 ]}
             >
-                <Text style={styles.deleteText}>Delete</Text>
+                <Text style={styles.settingsText}>24-Hour</Text>
             </Pressable>
         </View>
     );
@@ -63,8 +69,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20
     },
-    deleteIcon: {
-        width: 80,
+    settingsIcon: {
+        width: 100,
         height: 40,
         position: 'absolute',
         top: 20,
@@ -73,7 +79,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10
     },
-    deleteText: {
+    settingsText: {
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 20

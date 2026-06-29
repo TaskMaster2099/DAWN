@@ -5,7 +5,7 @@ import {
     View
 } from 'react-native';
 
-function Clock(props) {
+function Clock({use24Hour}) {
     const [currentDate, setCurrentDate] = useState('');
     const [currentTime, setCurrentTime] = useState('');
 
@@ -22,7 +22,8 @@ function Clock(props) {
             const timeString = now.toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit',
-                second: '2-digit'
+                second: '2-digit',
+                hour12: !use24Hour
             });
             
             setCurrentDate(dateString)
@@ -34,7 +35,7 @@ function Clock(props) {
         const timerId = setInterval(updateDateTime, 1000);
 
         return () => clearInterval(timerId);
-    }, []);
+    }, [use24Hour]);
 
     return (
         <View style={styles.container}>
