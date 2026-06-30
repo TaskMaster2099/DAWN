@@ -10,6 +10,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import * as NavigationBar from 'expo-navigation-bar';
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import TestScreen from './app/screens/TestScreen';
+import SongScreen from './app/screens/SongScreen';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Home');
@@ -35,6 +36,9 @@ export default function App() {
             is24Hour={is24Hour}
             setIs24Hour={setIs24Hour}
           />
+        )}
+        {currentScreen === 'Song' && (
+          <SongScreen onNavigate={setCurrentScreen} />
         )}
       </SafeAreaView>
     </SafeAreaProvider>
