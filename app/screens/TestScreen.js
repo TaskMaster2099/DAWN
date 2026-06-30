@@ -8,9 +8,7 @@ import {
 } from 'react-native';
 import Clock from './Clock';
 
-function TestScreen({onNavigate}) {
-    const [is24Hour, setIs24Hour] = useState(false);
-
+function TestScreen({onNavigate, is24Hour, setIs24Hour}) {
     const handleClose = () => {
         onNavigate('Home')
     };

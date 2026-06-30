@@ -14,6 +14,8 @@ import TestScreen from './app/screens/TestScreen';
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Home');
 
+  const [is24Hour, setIs24Hour] = useState(false);
+
   useEffect(() => {
     NavigationBar.setButtonStyleAsync('light');
   }, []);
@@ -28,7 +30,11 @@ export default function App() {
         )}
 
         {currentScreen === 'Test' && (
-          <TestScreen onNavigate={setCurrentScreen} />
+          <TestScreen
+            onNavigate={setCurrentScreen}
+            is24Hour={is24Hour}
+            setIs24Hour={setIs24Hour}
+          />
         )}
       </SafeAreaView>
     </SafeAreaProvider>

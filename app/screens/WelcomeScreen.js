@@ -7,8 +7,18 @@ import {
     View,
     Pressable
 } from 'react-native';
+import {useAudioPlayer} from 'expo-audio';
 
 function WelcomeScreen({onNavigate}) {
+    const player = useAudioPlayer(require('../assets/click.wav'))
+
+    const handlePress = () => {
+        if (player) {
+            player.seekTo(0)
+            player.play()
+        }
+    }
+
     const handleLogin = () => {
         onNavigate('Test')
     };
@@ -32,7 +42,7 @@ function WelcomeScreen({onNavigate}) {
                 <Text style={styles.loginText}>Login</Text>
             </Pressable>
             <Pressable
-                // onPress={handleLogin}
+                onPress={handlePress}
                 style={({pressed}) => [
                     styles.registerButton,
                     {backgroundColor: pressed ? '#3c9b95' : '#4ecdc4'}
