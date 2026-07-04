@@ -46,8 +46,10 @@ function Clock({use24Hour}) {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start',
+        top: 150
     },
     dateText: {
         fontSize: 20,
