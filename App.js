@@ -15,7 +15,6 @@ import SongScreen from './app/screens/SongScreen';
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Home');
   const [is24Hour, setIs24Hour] = useState(false);
-  const [showAlarm, setShowAlarm] = useState(false);
 
   useEffect(() => {
     NavigationBar.setButtonStyleAsync('light');
@@ -35,8 +34,6 @@ export default function App() {
             onNavigate={setCurrentScreen}
             is24Hour={is24Hour}
             setIs24Hour={setIs24Hour}
-            showAlarm={showAlarm}
-            setShowAlarm={setShowAlarm}
           />
         )}
         {currentScreen === 'Song' && (

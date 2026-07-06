@@ -9,7 +9,9 @@ import {
 import Clock from './Clock';
 import Alarm from './Alarm';
 
-function TestScreen({onNavigate, is24Hour, setIs24Hour, showAlarm, setShowAlarm}) {
+function TestScreen({onNavigate, is24Hour, setIs24Hour,}) {
+
+    const [showAlarm, setShowAlarm] = useState(false);
 
     const handleClose = () => {
         onNavigate('Home')
@@ -26,9 +28,6 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour, showAlarm, setShowAlarm}
     return (
         <View style={styles.container}>
             <Clock use24Hour={is24Hour}/>
-
-            {showAlarm && <Alarm />}
-
             <Pressable
                 onPress={handleAddAlarm}
                 style={({pressed}) => [
@@ -56,6 +55,8 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour, showAlarm, setShowAlarm}
             >
                 <Text style={styles.settingsText}>24-Hour</Text>
             </Pressable>
+
+            {showAlarm && <Alarm setShowAlarm={setShowAlarm} />}
         </View>
     );
 }
