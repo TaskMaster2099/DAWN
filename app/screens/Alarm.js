@@ -10,20 +10,37 @@ import {
 
 function Alarm({setShowAlarm}) {
     const [alarmTime, setAlarmTime] = useState('')
-    const [tempTime, setTempTime] = useState('')
     const [isInputVisible, setIsInputVisible] = useState(false)
+
+    const [hour, setHour] = useState('')
+    const [minute, setMinute] = useState('')
+    const [period, setPeriod] = useState('AM')
 
     const handleCancel = () => {
         setShowAlarm(false);
     };
 
     const handleSetTime = () => {
-        setTempTime(alarmTime)
         setIsInputVisible(true)
     }
 
     const handleConfirmTime = () => {
-        setAlarmTime(tempTime)
+        if (!hour || !minute) {
+            alert("Please enter both hours and minutes.")
+            return
+        } else if (parseInt(hour) < 1 || parseInt(hour) > 12 || !Number.isInteger(parseInt(hour))) {
+            alert("Please enter a valid hour (1-12).")
+            return
+        } else if (parseInt(minute) < 0 || parseInt(minute) > 59 || !Number.isInteger(parseInt(minute))) {
+            alert("Please enter a valid minute (0-59).")
+            return
+        }
+        
+        const formattedHour = hour.padStart(2, '0')
+        const formattedMinute = minute.padStart(2, '0')
+        const finalTimeString = `${formattedHour}:${formattedMinute} ${period}`
+
+        setAlarmTime(finalTimeString)
         setIsInputVisible(false)
     }
 
@@ -45,17 +62,46 @@ function Alarm({setShowAlarm}) {
             >
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalBox}>
-                        <Text style={styles.modalTitle}>Enter Time</Text>
+                        <Text style={styles.modalTitle}>Set Time</Text>
 
-                        <TextInput
-                            style={styles.inputField}
-                            placeholder="e.g., 0730"
-                            placeholderTextColor="#888"
-                            keyboardType="number-pad"
-                            value={tempTime}
-                            onChangeText={setTempTime}
-                            maxLength={4}
-                        />
+                        <View style={styles.inputRow}>
+                            <TextInput
+                                style={styles.inputField}
+                                placeholder="12"
+                                placeholderTextColor="#888"
+                                keyboardType="number-pad"
+                                maxLength={2}
+                                value={hour}
+                                onChangeText={setHour}
+                            />
+
+                            <Text style={styles.colon}>:</Text>
+
+                            <TextInput
+                                style={styles.inputField}
+                                placeholder="00"
+                                placeholderTextColor="#888"
+                                keyboardType="number-pad"
+                                maxLength={2}
+                                value={minute}
+                                onChangeText={setMinute}
+                            />
+
+                            <View style={styles.periodContainer}>
+                                <Pressable
+                                    onPress={() => setPeriod('AM')}
+                                    style={[styles.periodButton, period === 'AM' && styles.activePeriodButton]}
+                                >
+                                    <Text style={[styles.periodText, period === 'AM' && styles.activePeriodText]}>AM</Text>
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => setPeriod('PM')}
+                                    style={[styles.periodButton, period === 'PM' && styles.activePeriodButton]}
+                                >
+                                    <Text style={[styles.periodText, period === 'PM' && styles.activePeriodText]}>PM</Text>
+                                </Pressable>
+                            </View>
+                        </View>
 
                         <View style={styles.modalButtons}>
                             <Pressable
@@ -185,8 +231,7 @@ const styles = StyleSheet.create({
     setTimeText: {
         fontSize: 25,
         fontWeight: 'bold',
-        color: '#000000',
-        letterSpacing: 4
+        color: '#000000'
     },
     modalOverlay: {
         flex: 1,
@@ -207,22 +252,57 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: '#000'
     },
+    inputRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 40
+    },
     inputField: {
-        width: '100%',
-        height: 50,
+        width: 60,
+        height: 60,
         borderColor: '#ccc',
         borderWidth: 2,
         borderRadius: 10,
-        paddingHorizontal: 10,
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 25,
+        fontWeight: 'bold',
         color: '#000',
-        marginBottom: 20
     },
     modalButtons: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%'
+    },
+    colon: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginHorizontal: 10,
+        color: '#000',
+        bottom: 2.5
+    },
+    periodContainer: {
+        marginLeft: 10,
+        justifyContent: 'space-between',
+        height: 60
+    },
+    periodButton: {
+        width: 50,
+        height: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+    },
+    activePeriodButton: {
+        backgroundColor: '#3c9b95',
+    },
+    periodText: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#000'
+    },
+    activePeriodText: {
+        color: '#fff',
     },
     modalButton: {
         flex: 1,
