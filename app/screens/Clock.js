@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        top: 150
+        top: 100
     },
     dateText: {
         fontSize: 20,

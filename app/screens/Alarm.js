@@ -8,10 +8,9 @@ import {
     TextInput
 } from 'react-native';
 
-function Alarm({setShowAlarm}) {
+function Alarm({setShowAlarm, onNewAlarm}) {
     const [alarmTime, setAlarmTime] = useState('')
     const [isInputVisible, setIsInputVisible] = useState(false)
-
     const [hour, setHour] = useState('')
     const [minute, setMinute] = useState('')
     const [period, setPeriod] = useState('AM')
@@ -35,7 +34,7 @@ function Alarm({setShowAlarm}) {
             alert("Please enter a valid minute (0-59).")
             return
         }
-        
+
         const formattedHour = hour.padStart(2, '0')
         const formattedMinute = minute.padStart(2, '0')
         const finalTimeString = `${formattedHour}:${formattedMinute} ${period}`
@@ -49,6 +48,7 @@ function Alarm({setShowAlarm}) {
             alert("Please set a time before saving.")
             return
         }
+        onNewAlarm(alarmTime)
         setShowAlarm(false)
     }
 

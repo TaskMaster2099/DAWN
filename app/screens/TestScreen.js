@@ -4,13 +4,13 @@ import {
     StyleSheet,
     View,
     Pressable,
-    Text
+    Text,
+    FlatList
 } from 'react-native';
 import Clock from './Clock';
 import Alarm from './Alarm';
 
-function TestScreen({onNavigate, is24Hour, setIs24Hour,}) {
-
+function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
     const [showAlarm, setShowAlarm] = useState(false);
 
     const handleClose = () => {
@@ -24,6 +24,16 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour,}) {
     const handleAddAlarm = () => {
         setShowAlarm(true)
     };
+
+    const handleNewAlarm = (timeString) => {
+        setAlarms((prevAlarms) => [...prevAlarms, timeString])
+    }
+
+    const handleDeleteAlarm = (indexToDelete) => {
+        setAlarms((prevAlarms) =>
+            prevAlarms.filter((_, index) => index !== indexToDelete)
+        )
+    }
 
     return (
         <View style={styles.container}>
@@ -56,7 +66,33 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour,}) {
                 <Text style={styles.settingsText}>24-Hour</Text>
             </Pressable>
 
-            {showAlarm && <Alarm setShowAlarm={setShowAlarm} />}
+            {showAlarm && <Alarm setShowAlarm={setShowAlarm} onNewAlarm={handleNewAlarm}/>}
+
+            <View style={styles.alarmsListContainer}>
+                <Text style={styles.listTitle}>Saved Alarms:</Text>
+                {alarms.length === 0 ? (
+                    <Text style={styles.noAlarmsText}>No alarms set yet</Text>
+                ) : (
+                    <FlatList
+                        data={alarms}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({item, index}) => (
+                            <View style={styles.alarmRow}>
+                                <Text style={styles.alarmRowText}>{item}</Text>
+                                <Pressable
+                                    onPress={() => handleDeleteAlarm(index)}
+                                    style={({pressed}) => [
+                                        styles.deleteButton,
+                                        {backgroundColor: pressed ? '#bd3a42' : '#fc5c65'}
+                                    ]}
+                                >
+                                    <Text style={styles.deleteButtonText}>X</Text>
+                                </Pressable>
+                            </View>
+                        )}
+                    />
+                )}
+            </View>
         </View>
     );
 }
@@ -68,11 +104,57 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    alarmsListContainer: {
+        width: '80%',
+        height: 400,
+        position: 'absolute',
+        bottom: 0,
+        alignItems: 'center',
+        backgroundColor: '#000000'
+    },
+    listTitle: {
+        color: '#fff',
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 10
+    },
+    noAlarmsText: {
+        color: '#cacaca',
+        fontSize: 16
+    },
+    alarmRow: {
+        backgroundColor: '#444444',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginVertical: 5,
+        width: 200,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    alarmRowText: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    deleteButton: {
+        width: 25,
+        height: 25,
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    deleteButtonText:{
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 15
+    },
     alarmIcon: {
         width: 120,
         height: 40,
         position: 'absolute',
-        bottom: 350,
+        top: 200,
         left: 120,
         justifyContent: 'center',
         alignItems: 'center',
