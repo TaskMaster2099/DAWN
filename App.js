@@ -10,10 +10,12 @@ import {createAudioPlayer} from 'expo-audio';
 import { StatusBar } from 'expo-status-bar';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import * as NavigationBar from 'expo-navigation-bar';
+
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import TestScreen from './app/screens/TestScreen';
 import SongScreen from './app/screens/SongScreen';
 
+// Main App function that handles navigation and alarm triggering
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Home');
   const [is24Hour, setIs24Hour] = useState(false);
@@ -21,6 +23,7 @@ export default function App() {
   const playerRef = useRef(null);
   const lastTriggeredMin = useRef('');
   
+  // Function to trigger the alarm sound and show an alert
   const triggerAlarmSound = async (alarmTime) => {
     try {
       if (playerRef.current) {
@@ -49,6 +52,7 @@ export default function App() {
     }
   }
 
+  // Function to stop the alarm sound
   const stopAlarmSound = () => {
     if (playerRef.current) {
       try {
@@ -61,10 +65,12 @@ export default function App() {
     }
   }
 
+  // Preset navigation bar style
   useEffect(() => {
     NavigationBar.setButtonStyleAsync('light')
   }, [])
   
+  // Check if the current time matches any of the set alarms every second
   useEffect(() => {
     const timer = setInterval(() => {
       if (alarms.length === 0) return
@@ -98,6 +104,8 @@ export default function App() {
     return () => clearInterval(timer)
   }, [alarms]);
 
+
+  // Screen rendering
   return (
     <SafeAreaProvider>
       <StatusBar style='light' backgroundColor='#000000'/>

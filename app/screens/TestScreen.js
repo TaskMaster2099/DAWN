@@ -7,10 +7,14 @@ import {
     Text,
     FlatList
 } from 'react-native';
+
 import Clock from './Clock';
 import Alarm from './Alarm';
 
+// Screen that allows users to see the clock and set alarms
 function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
+
+    // Navigation and alarm management states
     const [showAlarm, setShowAlarm] = useState(false);
 
     const handleClose = () => {
@@ -35,6 +39,7 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
         )
     }
 
+    // Screen rendering
     return (
         <View style={styles.container}>
             <Clock use24Hour={is24Hour}/>
@@ -97,6 +102,7 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
     );
 }
 
+// Preset graphical styles for components
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#000000',

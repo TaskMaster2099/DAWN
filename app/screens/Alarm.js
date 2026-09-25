@@ -8,6 +8,7 @@ import {
     TextInput
 } from 'react-native';
 
+// Function that handles alarm creation and input
 function Alarm({setShowAlarm, onNewAlarm}) {
     const [alarmTime, setAlarmTime] = useState('')
     const [isInputVisible, setIsInputVisible] = useState(false)
@@ -23,6 +24,7 @@ function Alarm({setShowAlarm, onNewAlarm}) {
         setIsInputVisible(true)
     }
 
+    // Confirm time input and format
     const handleConfirmTime = () => {
         if (!hour || !minute) {
             alert("Please enter both hours and minutes.")
@@ -35,6 +37,7 @@ function Alarm({setShowAlarm, onNewAlarm}) {
             return
         }
 
+        // Formatting
         const formattedHour = hour.padStart(2, '0')
         const formattedMinute = minute.padStart(2, '0')
         const finalTimeString = `${formattedHour}:${formattedMinute} ${period}`
@@ -43,6 +46,7 @@ function Alarm({setShowAlarm, onNewAlarm}) {
         setIsInputVisible(false)
     }
 
+    // Save the alarm and close
     const handleSave = () => {
         if (!alarmTime) {
             alert("Please set a time before saving.")
@@ -52,6 +56,7 @@ function Alarm({setShowAlarm, onNewAlarm}) {
         setShowAlarm(false)
     }
 
+    // Screen rendering
     return(
         <View style={styles.container}>
 
@@ -164,6 +169,7 @@ function Alarm({setShowAlarm, onNewAlarm}) {
     )
 }
 
+// Preset graphical styles for components
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',

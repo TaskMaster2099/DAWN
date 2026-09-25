@@ -5,10 +5,12 @@ import {
     View
 } from 'react-native';
 
+// Function that handles clock and time
 function Clock({use24Hour}) {
     const [currentDate, setCurrentDate] = useState('');
     const [currentTime, setCurrentTime] = useState('');
 
+    // Update the date and time every second
     useEffect(() => {
         const updateDateTime = () => {
             const now = new Date();
@@ -36,6 +38,7 @@ function Clock({use24Hour}) {
         return () => clearInterval(timerId);
     }, [use24Hour]);
 
+    // Screen rendering
     return (
         <View style={styles.container}>
             <Text style={styles.dateText}>{currentDate}</Text>
@@ -44,6 +47,7 @@ function Clock({use24Hour}) {
     );
 }
 
+// Preset graphical styles for components
 const styles = StyleSheet.create({
     container: {
         flex: 1,

@@ -8,8 +8,10 @@ import {
     Pressable
 } from 'react-native';
 
+// Default home screen
 function WelcomeScreen({onNavigate}) {
 
+    // Navigation to different screens
     const handlePress = () => {
         onNavigate('Song')
     };
@@ -18,6 +20,7 @@ function WelcomeScreen({onNavigate}) {
         onNavigate('Test')
     };
 
+    // Screen rendering
     return (
         <ImageBackground
             resizeMode='contain'
@@ -49,6 +52,7 @@ function WelcomeScreen({onNavigate}) {
     );
 }
 
+// Preset graphical styles for components
 const styles = StyleSheet.create({
     background: {
         flex: 1,
