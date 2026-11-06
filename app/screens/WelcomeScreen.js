@@ -1,7 +1,6 @@
 import React from 'react';
 import {
     Image,
-    ImageBackground,
     StyleSheet,
     Text,
     View,
@@ -22,10 +21,7 @@ function WelcomeScreen({onNavigate}) {
 
     // Screen rendering
     return (
-        <ImageBackground
-            resizeMode='contain'
-            style={styles.background}
-        >
+        <View style={styles.background}>
             <View style={styles.logoContainer}>
                 <Image style={styles.logo} source={require('../assets/favicon.png')}/>
                 <Text style={{color: '#ffffff'}}>Wake Up Without Worries</Text>
@@ -48,7 +44,7 @@ function WelcomeScreen({onNavigate}) {
             >
                 <Text style={styles.songText}>Songs</Text>
             </Pressable>
-        </ImageBackground>
+        </View>
     );
 }
 

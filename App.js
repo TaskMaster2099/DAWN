@@ -9,7 +9,7 @@ import {
 import {createAudioPlayer} from 'expo-audio';
 import { StatusBar } from 'expo-status-bar';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import * as NavigationBar from 'expo-navigation-bar';
+import {NavigationBar} from 'expo-navigation-bar';
 
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import TestScreen from './app/screens/TestScreen';
@@ -67,7 +67,7 @@ export default function App() {
 
   // Preset navigation bar style
   useEffect(() => {
-    NavigationBar.setButtonStyleAsync('light')
+    NavigationBar.setStyle('light')
   }, [])
   
   // Check if the current time matches any of the set alarms every second
