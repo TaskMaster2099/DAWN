@@ -50,10 +50,9 @@ function Clock({use24Hour}) {
 // Preset graphical styles for components
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         alignItems: 'center',
         justifyContent: 'flex-start',
-        top: 100
+        marginTop: 100
     },
     dateText: {
         fontSize: 20,

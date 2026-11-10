@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
     Text,
     StyleSheet,
@@ -47,13 +47,17 @@ function Alarm({setShowAlarm, onNewAlarm}) {
     }
 
     // Save the alarm and close
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!alarmTime) {
             alert("Please set a time before saving.")
             return
         }
-        onNewAlarm(alarmTime)
-        setShowAlarm(false)
+
+        const success = await onNewAlarm(alarmTime)
+
+        if (success) {
+            setShowAlarm(false)
+        }
     }
 
     // Screen rendering

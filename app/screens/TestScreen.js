@@ -12,7 +12,15 @@ import Clock from './Clock';
 import Alarm from './Alarm';
 
 // Screen that allows users to see the clock and set alarms
-function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
+function TestScreen({
+    onNavigate,
+    is24Hour,
+    setIs24Hour,
+    alarms,
+    onNewAlarm,
+    onDeleteAlarm
+    // setAlarms
+    }) {
 
     // Navigation and alarm management states
     const [showAlarm, setShowAlarm] = useState(false);
@@ -28,16 +36,6 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
     const handleAddAlarm = () => {
         setShowAlarm(true)
     };
-
-    const handleNewAlarm = (timeString) => {
-        setAlarms((prevAlarms) => [...prevAlarms, timeString])
-    }
-
-    const handleDeleteAlarm = (indexToDelete) => {
-        setAlarms((prevAlarms) =>
-            prevAlarms.filter((_, index) => index !== indexToDelete)
-        )
-    }
 
     // Screen rendering
     return (
@@ -71,7 +69,7 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
                 <Text style={styles.settingsText}>24-Hour</Text>
             </Pressable>
 
-            {showAlarm && <Alarm setShowAlarm={setShowAlarm} onNewAlarm={handleNewAlarm}/>}
+            {showAlarm && <Alarm setShowAlarm={setShowAlarm} onNewAlarm={onNewAlarm}/>}
 
             <View style={styles.alarmsListContainer}>
                 <Text style={styles.listTitle}>Saved Alarms:</Text>
@@ -80,12 +78,12 @@ function TestScreen({onNavigate, is24Hour, setIs24Hour, alarms, setAlarms}) {
                 ) : (
                     <FlatList
                         data={alarms}
-                        keyExtractor={(item, index) => index.toString()}
+                        keyExtractor={(item) => item.id}
                         renderItem={({item, index}) => (
                             <View style={styles.alarmRow}>
-                                <Text style={styles.alarmRowText}>{item}</Text>
+                                <Text style={styles.alarmRowText}>{item.time}</Text>
                                 <Pressable
-                                    onPress={() => handleDeleteAlarm(index)}
+                                    onPress={() => onDeleteAlarm(item.id)}
                                     style={({pressed}) => [
                                         styles.deleteButton,
                                         {backgroundColor: pressed ? '#bd3a42' : '#fc5c65'}
@@ -111,10 +109,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     alarmsListContainer: {
+        flex: 1,
         width: '80%',
-        height: 400,
-        position: 'absolute',
-        bottom: 0,
+        marginTop: 25,
         alignItems: 'center',
         backgroundColor: '#000000'
     },
@@ -159,12 +156,10 @@ const styles = StyleSheet.create({
     alarmIcon: {
         width: 120,
         height: 40,
-        position: 'absolute',
-        top: 200,
-        left: 120,
+        marginTop: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 10
+        borderRadius: 10,
     },
     alarmText: {
         color: '#000000',

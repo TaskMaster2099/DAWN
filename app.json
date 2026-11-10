@@ -6,33 +6,52 @@
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "userInterfaceStyle": "light",
-
     "ios": {
       "supportsTablet": true
-      },
-
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-        }
       },
-
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM",
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+      ],
+      "package": "com.taskmaster2099.dawn"
+    },
     "web": {
       "favicon": "./app/assets/favicon.png"
-      },
-      
+    },
     "plugins": [
       "expo-audio",
       "expo-status-bar",
       "expo-asset",
       [
-        "expo-splash-screen", {
-        "image": "./app/assets/splash-icon.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
+        "expo-notifications",
+        {
+         "sounds": [
+            "./app/assets/audio/alarm.wav"
+          ]
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./app/assets/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "5cb39f16-865b-466f-89d1-b67d95704cd5"
+      }
+    }
   }
 }

@@ -4,106 +4,173 @@ import {
   Text,
   Button,
   View,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import {createAudioPlayer} from 'expo-audio';
 import { StatusBar } from 'expo-status-bar';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {NavigationBar} from 'expo-navigation-bar';
+import * as Notifications from 'expo-notifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import WelcomeScreen from './app/screens/WelcomeScreen';
 import TestScreen from './app/screens/TestScreen';
 import SongScreen from './app/screens/SongScreen';
+import {
+  scheduleDailyAlarm,
+  cancelAlarm,
+  prepareAlarmPermissions,
+  convertTo24Hour
+} from './app/screens/Notification';
+import DawnAlarm from './modules/dawn-alarm/src';
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowBanner: true,
+    shouldShowList: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false
+  })
+})
 
 // Main App function that handles navigation and alarm triggering
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('Home');
   const [is24Hour, setIs24Hour] = useState(false);
   const [alarms, setAlarms] = useState([]);
-  const playerRef = useRef(null);
-  const lastTriggeredMin = useRef('');
-  
-  // Function to trigger the alarm sound and show an alert
-  const triggerAlarmSound = async (alarmTime) => {
+  const [alarmsLoaded, setAlarmsLoaded] = useState(false);
+
+  const handleNewAlarm = async (timeString) => {
     try {
-      if (playerRef.current) {
-        playerRef.current.release()
+      const id = Date.now().toString();
+      let notificationId = null;
+
+      if (Platform.OS === 'android') {
+        const exactAlarmGranted = await prepareAlarmPermissions();
+
+        if (!exactAlarmGranted) {
+          throw new Error(
+            'Please allow Dawn to schedule exact alarms in your Android settings.'
+          );
+        }
+
+        const {hour, minute} = convertTo24Hour(timeString);
+
+        DawnAlarm.scheduleDailyAlarm(hour, minute, id);
+
+      } else {
+      notificationId = await scheduleDailyAlarm(timeString, id);
       }
 
-      const player = createAudioPlayer(require('./app/assets/audio/alarm.mp3'))
-      playerRef.current = player
+      const newAlarm = {
+        id,
+        time: timeString,
+        notificationId
+      };
 
-      player.loop = true
-      player.play()
+      setAlarms(previous => [...previous, newAlarm]);
 
-      Alert.alert(
-        "Alarm!",
-        `It is now ${alarmTime}`,
-        [
-          {
-            text: "Dismiss",
-            onPress: () => stopAlarmSound()
-          }
-        ],
-        {cancelable: false}
-      )
+      return true;
+
     } catch (error) {
-      console.error("Audio playback error:", error)
+      Alert.alert('Unable to set alarm.', error.message);
+      return false;
     }
   }
 
-  // Function to stop the alarm sound
-  const stopAlarmSound = () => {
-    if (playerRef.current) {
-      try {
-        playerRef.current.pause()
-        playerRef.current.release()
-        playerRef.current = null
-      } catch (error) {
-        console.error("Audio stopping error:", error)
+  const handleDeleteAlarm = async (alarmId) => {
+    try {
+      const alarm = alarms.find(item => item.id === alarmId);
+
+      if (Platform.OS === 'android') {
+        DawnAlarm.cancelScheduledAlarm(alarmId);
+      } else if (alarm?.notificationId) {
+        await cancelAlarm(alarm.notificationId);
       }
+
+      setAlarms(previous =>
+        previous.filter(item => item.id !== alarmId)
+      );
+
+    } catch (error) {
+      Alert.alert('Unable to delete alarm.', error.message);
     }
   }
+
+  useEffect(() => {
+    const lastResponse = Notifications.getLastNotificationResponse()
+
+    if (lastResponse) {
+      setCurrentScreen('Test')
+
+      Notifications.clearLastNotificationResponse()
+    }
+
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      response => {
+        setCurrentScreen('Test')
+      }
+    )
+
+    return () => subscription.remove()
+  }, [])
+
+  useEffect(() => {
+    const loadAlarms = async () => {
+      try {
+        const savedAlarms = await AsyncStorage.getItem('alarms')
+
+        if (savedAlarms !== null) {
+          setAlarms(JSON.parse(savedAlarms))
+        }
+      } catch (error) {
+        console.error('Error loading alarms:', error)
+      } finally {
+        setAlarmsLoaded(true)
+      }
+    }
+
+    loadAlarms()
+  }, [])
+
+  useEffect(() => {
+    if (!alarmsLoaded) return
+
+    AsyncStorage.setItem('alarms', JSON.stringify(alarms))
+    .catch(error => console.error('Error saving alarms:', error))
+  }, [alarms, alarmsLoaded])
 
   // Preset navigation bar style
   useEffect(() => {
     NavigationBar.setStyle('light')
   }, [])
-  
-  // Check if the current time matches any of the set alarms every second
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (alarms.length === 0) return
+    try {
+      console.log('Native module test:', DawnAlarm.hello())
+    } catch (error) {
+      console.error('Native module test failed:', error)
+    }
+  }, [])
 
-      const now = new Date()
-      let hours = now.getHours()
-      const minutes = String(now.getMinutes()).padStart(2, '0')
+  const testStartAlarm = () => {
+    try {
+      DawnAlarm.startAlarm();
+      Alert.alert('Success', 'Native alarm service started!');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
 
-      const period = hours >= 12 ? 'PM' : 'AM'
-      hours = hours % 12
-      hours = hours ? hours : 12
-      const formattedHours = String(hours).padStart(2, '0')
-
-      const currentTimeString = `${formattedHours}:${minutes} ${period}`
-
-      if (lastTriggeredMin.current === currentTimeString) return
-
-      const cleanCurrentTime = currentTimeString.replace(/^0/, '')
-
-      const matchFound = alarms.some(alarm => {
-        const cleanAlarmTime = alarm.replace(/^0/, '')
-        return cleanAlarmTime === cleanCurrentTime
-      })
-
-      if (matchFound) {
-        lastTriggeredMin.current = currentTimeString
-        triggerAlarmSound(currentTimeString)
-      }
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [alarms]);
-
+  const testStopAlarm = () => {
+    try {
+      DawnAlarm.stopAlarm();
+      Alert.alert('Success', 'Native alarm service stopped!');
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
 
   // Screen rendering
   return (
@@ -121,12 +188,25 @@ export default function App() {
             is24Hour={is24Hour}
             setIs24Hour={setIs24Hour}
             alarms={alarms}
-            setAlarms={setAlarms}
+            onNewAlarm={handleNewAlarm}
+            onDeleteAlarm={handleDeleteAlarm}
+            // setAlarms={setAlarms}
           />
         )}
         {currentScreen === 'Song' && (
           <SongScreen onNavigate={setCurrentScreen} />
         )}
+
+        <Button
+          title="TEST START ALARM"
+          onPress={testStartAlarm}
+        />
+
+        <Button
+          title="TEST STOP ALARM"
+          onPress={testStopAlarm}
+        />
+        
       </SafeAreaView>
     </SafeAreaProvider>
   );
