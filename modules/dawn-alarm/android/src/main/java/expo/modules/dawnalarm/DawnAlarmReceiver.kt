@@ -12,8 +12,10 @@ class DawnAlarmReceiver : BroadcastReceiver() {
         val hour = intent?.getIntExtra("hour", -1) ?: -1
         val minute = intent?.getIntExtra("minute", -1) ?: -1
 
-        // Start the alarm sound service.
-        val serviceIntent = Intent(context, DawnAlarmService::class.java)
+        // Start the alarm service and pass it the alarm ID.
+        val serviceIntent = Intent(context, DawnAlarmService::class.java).apply {
+            putExtra("alarmId", alarmId)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(serviceIntent)

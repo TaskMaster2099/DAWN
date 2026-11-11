@@ -14,6 +14,11 @@
             android:name="expo.modules.dawnalarm.DawnAlarmReceiver"
             android:enabled="true"
             android:exported="false" />
+        
+        <receiver
+            android:name="expo.modules.dawnalarm.AlarmTimeoutReceiver"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

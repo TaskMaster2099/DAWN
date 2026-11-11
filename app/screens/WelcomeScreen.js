@@ -11,10 +11,6 @@ import {
 function WelcomeScreen({onNavigate}) {
 
     // Navigation to different screens
-    const handlePress = () => {
-        onNavigate('Song')
-    };
-
     const handleLogin = () => {
         onNavigate('Test')
     };
@@ -34,15 +30,6 @@ function WelcomeScreen({onNavigate}) {
                 ]}
             >
                 <Text style={styles.loginText}>Login</Text>
-            </Pressable>
-            <Pressable
-                onPress={handlePress}
-                style={({pressed}) => [
-                    styles.songButton,
-                    {backgroundColor: pressed ? '#3c9b95' : '#4ecdc4'}
-                ]}
-            >
-                <Text style={styles.songText}>Songs</Text>
             </Pressable>
         </View>
     );
@@ -67,20 +54,6 @@ const styles = StyleSheet.create({
         margin: 10
     },
     loginText: {
-        color: '#ffffff',
-        fontWeight: 'bold',
-        fontSize: 25
-    },
-    songButton: {
-        width: '40%',
-        height: 70,
-        bottom: '5%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        margin: 10
-    },
-    songText: {
         color: '#ffffff',
         fontWeight: 'bold',
         fontSize: 25

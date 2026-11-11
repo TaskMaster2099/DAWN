@@ -3,6 +3,7 @@
     "name": "dawn",
     "slug": "dawn",
     "version": "1.0.0",
+    "scheme": "dawn",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "userInterfaceStyle": "light",

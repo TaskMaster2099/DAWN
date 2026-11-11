@@ -41,6 +41,58 @@ class DawnAlarm : Module() {
             Unit
         }
 
+        Function("pauseAlarmForPuzzle") {
+            alarmId: String, delayMillis: Double ->
+
+            val context = appContext.reactContext
+                ?: throw Exception("React context is unavailable")
+
+            // Schedule the restart before silencing the alarm.
+            DawnAlarmScheduler.schedulePuzzleTimeout(
+                context,
+                alarmId,
+                delayMillis.toLong()
+            )
+
+            // Temporarily pause the alarm audio.
+            val intent = Intent(
+                context,
+                DawnAlarmService::class.java
+            ).apply {
+                action = DawnAlarmService.ACTION_PAUSE
+                putExtra("alarmId", alarmId)
+            }
+
+            context.startService(intent)
+
+            Unit
+        }
+
+        Function("dismissAlarm") {
+            alarmId: String ->
+
+            val context = appContext.reactContext
+                ?: throw Exception("React context is unavailable")
+
+            // Prevent the countdown from restarting a dismissed alarm.
+            DawnAlarmScheduler.cancelPuzzleTimeout(
+                context,
+                alarmId
+            )
+
+            // Permanently stop the alarm service.
+            val intent = Intent(
+                context,
+                DawnAlarmService::class.java
+            ).apply {
+                action = DawnAlarmService.ACTION_STOP
+            }
+
+            context.startService(intent)
+
+            Unit
+        }
+
         Function("scheduleDailyAlarm") {
             hour: Int, minute: Int, alarmId: String ->
 

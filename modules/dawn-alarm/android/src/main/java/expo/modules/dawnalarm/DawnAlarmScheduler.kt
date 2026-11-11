@@ -13,6 +13,9 @@ object DawnAlarmScheduler {
     private const val ACTION_DAILY_ALARM =
         "expo.modules.dawnalarm.DAILY_ALARM"
 
+    private const val ACTION_PUZZLE_TIMEOUT =
+        "expo.modules.dawnalarm.PUZZLE_TIMEOUT"
+
     fun scheduleDailyAlarm(
         context: Context,
         hour: Int,
@@ -74,6 +77,95 @@ object DawnAlarmScheduler {
         minute: Int
     ) {
         scheduleDailyAlarm(context, hour, minute, alarmId)
+    }
+
+    fun schedulePuzzleTimeout(
+        context: Context,
+        alarmId: String,
+        delayMillis: Long
+    ) {
+        require(delayMillis > 0) {
+            "Puzzle countdown must be greater than zero."
+        }
+
+        val alarmManager =
+        context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+            !alarmManager.canScheduleExactAlarms()
+        ) {
+            throw SecurityException(
+               "Dawn does not have permission to schedule exact alarms."
+            )
+        }
+
+        val intent = Intent(
+            context,
+            AlarmTimeoutReceiver::class.java
+        ).apply {
+            action = ACTION_PUZZLE_TIMEOUT
+            data = Uri.parse("dawn://alarm/timeout/$alarmId")
+            putExtra("alarmId", alarmId)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            alarmId.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    0
+                }
+        )
+
+        val triggerTime = System.currentTimeMillis() + delayMillis
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
+            )
+        } else {
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
+            )
+        }
+    }
+
+    fun cancelPuzzleTimeout(context: Context, alarmId: String) {
+        val alarmManager =
+            context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val intent = Intent(
+            context,
+            AlarmTimeoutReceiver::class.java
+        ).apply {
+            action = ACTION_PUZZLE_TIMEOUT
+            data = Uri.parse("dawn://alarm/timeout/$alarmId")
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            alarmId.hashCode(),
+            intent,
+            PendingIntent.FLAG_NO_CREATE or
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    0
+                }
+        )
+
+        if (pendingIntent != null) {
+            alarmManager.cancel(pendingIntent)
+            pendingIntent.cancel()
+        }
     }
 
     private fun createPendingIntent(
